@@ -19,6 +19,14 @@ ExcludeArch:    %{ix86}
 BuildRequires:  cmake
 BuildRequires:  cmake(hyprwayland-scanner) >= 0.4.6
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 10
+# EL10: the hypr 0.56 stack needs C++26 library features missing from the base
+# gcc 14 libstdc++; gcc-toolset-15 links them statically via libstdc++_nonshared
+# so the built binaries run on the stock EL10 runtime. The matching annobin
+# plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
+BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
+%endif
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  ninja-build
 BuildRequires:  pkgconfig(aquamarine) >= 0.15.1
@@ -29,7 +37,13 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(hyprgraphics) >= 0.5.1
 BuildRequires:  pkgconfig(hyprlang) >= 0.6.8
 BuildRequires:  pkgconfig(hyprutils) >= 0.14.2
+%if 0%{?rhel} >= 10
+# EL10's iniparser-devel (4.1, CRB) ships headers and library but no .pc file;
+# a minimal pkg-config shim is generated in %%build so CMake still finds it.
+BuildRequires:  iniparser-devel
+%else
 BuildRequires:  pkgconfig(iniparser)
+%endif
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(pango)
 BuildRequires:  pkgconfig(pixman-1)
@@ -53,6 +67,20 @@ Development files for %{name}.
 %autosetup -p1
 
 %build
+%if 0%{?rhel} >= 10
+. /opt/rh/gcc-toolset-15/enable
+%endif
+%if 0%{?rhel} >= 10
+mkdir -p %{_builddir}/el10-pc-shim
+cat > %{_builddir}/el10-pc-shim/iniparser.pc <<'INIPC'
+Name: iniparser
+Description: INI file parser (shim for EL10 iniparser-devel, which has no .pc)
+Version: 4.1
+Libs: -liniparser
+Cflags: -I%{_includedir}/iniparser
+INIPC
+export PKG_CONFIG_PATH="%{_builddir}/el10-pc-shim${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+%endif
 %cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_TESTING=OFF
