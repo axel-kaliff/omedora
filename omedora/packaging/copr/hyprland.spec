@@ -39,12 +39,25 @@ Source1:        macros.hyprland
 # Lua 5.5 — Fedora 44 only has 5.4; Hyprland 0.55.x requires 5.5. Built static
 # in %build and exposed via pkg-config. MIT-licensed.
 Source2:        https://www.lua.org/ftp/lua-%{lua_version}.tar.gz
+# EL10: libstdc++ 15 (gcc-toolset-15, the newest EL10 toolchain) lacks
+# std::ranges::starts_with — a GCC 16 library feature Fedora 44 has. Patch the
+# one use site to the semantically identical ranges::mismatch form. Applied
+# unconditionally: the rewritten form is correct on every platform.
+Patch1:         hyprland-el10-ranges-starts-with.patch
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 10
+# EL10: the hypr 0.56 stack needs C++26 library features missing from the base
+# gcc 14 libstdc++; gcc-toolset-15 links them statically via libstdc++_nonshared
+# so the built binaries run on the stock EL10 runtime. The matching annobin
+# plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
+BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
+%endif
 BuildRequires:  meson
 BuildRequires:  ninja-build
 # 0.56.x find_package(glaze 7...<8) in hyprland core itself (0.55.x only needed
@@ -198,6 +211,9 @@ Requires:       pkgconfig(xkbcommon)
 sed -i -e "s|@@HYPRLAND_VERSION@@|%{version}|g" %{SOURCE1}
 
 %build
+%if 0%{?rhel} >= 10
+. /opt/rh/gcc-toolset-15/enable
+%endif
 # --- Bundled Lua 5.5 (Fedora 44 has only 5.4; Hyprland 0.55.x needs 5.5) -----
 # Build Lua static and stage it under a private prefix, then synthesize a
 # pkg-config file so Hyprland's `pkg_search_module(... lua>=5.5 ...)` finds it.
