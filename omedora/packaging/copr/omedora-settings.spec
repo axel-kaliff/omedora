@@ -17,7 +17,7 @@
 # OMARCHY_PATH=/usr/share/omarchy.
 #
 # FEDORA COEXISTENCE DEVIATIONS from docs/file-layout.md (the hard constraints;
-# see also the per-section comments in %install):
+# see also the per-section comments in %%install):
 #   - default/libalpm/ (pacman hook), etc/mkinitcpio.conf.d/,
 #     etc/limine-entry-tool.d/, default/limine/, default/snapper/: SKIPPED —
 #     no pacman/mkinitcpio/limine/snapper on the Fedora path (Fedora keeps its
