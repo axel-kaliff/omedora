@@ -59,6 +59,7 @@ BuildRequires:  gcc-c++
 # so the built binaries run on the stock EL10 runtime. The matching annobin
 # plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
 BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-binutils
 BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
 %endif
 BuildRequires:  meson
@@ -215,7 +216,7 @@ sed -i -e "s|@@HYPRLAND_VERSION@@|%{version}|g" %{SOURCE1}
 
 %build
 %if 0%{?rhel} >= 10
-. /opt/rh/gcc-toolset-15/enable
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}
 %endif
 # --- Bundled Lua 5.5 (Fedora 44 has only 5.4; Hyprland 0.55.x needs 5.5) -----
 # Build Lua static and stage it under a private prefix, then synthesize a
