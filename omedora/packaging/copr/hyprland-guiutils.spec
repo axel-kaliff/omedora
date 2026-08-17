@@ -22,6 +22,14 @@ ExcludeArch:    %{ix86}
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 10
+# EL10: the hypr 0.56 stack needs C++26 library features missing from the base
+# gcc 14 libstdc++; gcc-toolset-15 links them statically via libstdc++_nonshared
+# so the built binaries run on the stock EL10 runtime. The matching annobin
+# plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
+BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
+%endif
 BuildRequires:  ninja-build
 BuildRequires:  pkgconfig(hyprlang) >= 0.6.8
 BuildRequires:  pkgconfig(hyprutils) >= 0.14.0
@@ -48,6 +56,9 @@ hyprtoolkit Wayland-native toolkit. It is the successor to hyprland-qtutils.
 %autosetup -p1
 
 %build
+%if 0%{?rhel} >= 10
+. /opt/rh/gcc-toolset-15/enable
+%endif
 %cmake -GNinja -DCMAKE_BUILD_TYPE=Release
 %cmake_build
 

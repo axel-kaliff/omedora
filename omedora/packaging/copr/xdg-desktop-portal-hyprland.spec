@@ -32,6 +32,14 @@ Source0:        %{url}/archive/%{commit}/%{name}-%{commit}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+%if 0%{?rhel} >= 10
+# EL10: the hypr 0.56 stack needs C++26 library features missing from the base
+# gcc 14 libstdc++; gcc-toolset-15 links them statically via libstdc++_nonshared
+# so the built binaries run on the stock EL10 runtime. The matching annobin
+# plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
+BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
+%endif
 BuildRequires:  systemd-rpm-macros
 
 BuildRequires:  pkgconfig(gbm)
@@ -71,6 +79,9 @@ Supplements:    hyprland
 test "$(cat VERSION)" = %{base_version}
 
 %build
+%if 0%{?rhel} >= 10
+. /opt/rh/gcc-toolset-15/enable
+%endif
 %cmake -DCMAKE_BUILD_TYPE=Release
 %cmake_build
 
