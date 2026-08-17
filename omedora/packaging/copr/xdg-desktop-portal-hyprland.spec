@@ -26,6 +26,7 @@ BuildRequires:  gcc-c++
 # so the built binaries run on the stock EL10 runtime. The matching annobin
 # plugin lets the distro's default -fplugin=annobin flags load under gcc 15.
 BuildRequires:  gcc-toolset-15-gcc-c++
+BuildRequires:  gcc-toolset-15-binutils
 BuildRequires:  gcc-toolset-15-gcc-plugin-annobin
 %endif
 BuildRequires:  systemd-rpm-macros
@@ -67,7 +68,7 @@ Supplements:    hyprland
 
 %build
 %if 0%{?rhel} >= 10
-. /opt/rh/gcc-toolset-15/enable
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}
 %endif
 %cmake -DCMAKE_BUILD_TYPE=Release
 %cmake_build
