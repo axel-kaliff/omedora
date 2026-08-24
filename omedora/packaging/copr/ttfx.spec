@@ -2,13 +2,17 @@
 
 Name:           ttfx
 Version:        0.5.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Terminal text effects as a native Rust binary
 
 License:        MIT AND (Apache-2.0 OR MIT) AND (Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT)
 URL:            https://github.com/omacom-io/ttfx
 Source0:        https://codeload.github.com/omacom-io/ttfx/tar.gz/refs/tags/v%{version}#/%{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}-vendor.tar.zst
+# EL10 glibc rounds pow/exp2 a few ulps off the upstream parity platform's
+# glibc; the bit-exact easing golden fails (4 ulps, OutExpo). Allow a small
+# ulp budget in the test — quantized effect output absorbs it.
+Patch0:         ttfx-easing-goldens-ulp-tolerance.patch
 
 ExclusiveArch:  x86_64
 
@@ -22,7 +26,7 @@ ttfx is a fast native Rust port of TerminalTextEffects. Quattro uses it for
 the animated screensaver and first-run console presentation.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{version} -p1
 %setup -q -T -D -a 1 -n %{name}-%{version}
 %cargo_prep -v vendor
 
@@ -56,6 +60,10 @@ target/release/ttfx --print-completion zsh \
 %{_datadir}/zsh/site-functions/_ttfx
 
 %changelog
+* Fri Nov 06 2026 Axel Kaliff <axel.kaliff@protonmail.com> - 0.5.0-2
+- Relax the easing golden test to an 8-ulp budget: EL10 glibc rounds
+  pow/exp2 a few ulps off the parity platform, failing bit-exactness.
+
 * Fri Oct 16 2026 omedora <noreply@omedora> - 0.5.0-1
 - Bump to upstream 0.5.0. Cargo vendor regenerated from the new Cargo.lock.
 
