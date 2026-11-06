@@ -1,0 +1,17 @@
+--- a/src/config/lua/bindings/LuaBindingsDispatchers.cpp
++++ b/src/config/lua/bindings/LuaBindingsDispatchers.cpp
+@@ -685,11 +685,9 @@
+     if (g_pKeybindManager->m_currentKeybind)
+         g_pKeybindManager->m_currentKeybind->releasePending = true;
+ 
+-    auto keepAspectRatio = Check::string(L, lua_upvalueindex(1));
+-    if (!keepAspectRatio)
+-        return Internal::configError(L, std::format("resize: bad argument 1: {}", keepAspectRatio.error()));
+-
+-    return Internal::checkResult(L, CA::mouse("resizewindow " + *keepAspectRatio));
++    // Reading this numeric upvalue as a string converts it in place
++    // without a GC write barrier, leaving the string unmarked.
++    return Internal::checkResult(L, CA::mouse(std::format("resizewindow {}", (int)lua_tonumber(L, lua_upvalueindex(1)))));
+ }
+ 
+ static int hlWindowClose(lua_State* L) {
