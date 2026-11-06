@@ -76,8 +76,11 @@ Obsoletes:      hyprland-omedora < 1.0.1
 
 # The dnf release-upgrade guard (see %%install) is a libdnf5 actions-plugin
 # drop-in; Fedora does not install the plugin by default (it is in no comps
-# group and nothing else requires it).
+# group and nothing else requires it). EL10 runs dnf4, which has no actions
+# plugin; the drop-in installs inert there.
+%if 0%{?fedora}
 Requires:       libdnf5-plugin-actions
+%endif
 
 # The payload is config/data + a handful of bash scripts; the heavyweight
 # runtime dependencies belong to the `omedora` package and the install
