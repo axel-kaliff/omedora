@@ -22,7 +22,7 @@
 
 Name:           hyprland
 Version:        0.56.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
@@ -47,6 +47,7 @@ Source2:        lua-5.5.0.tar.gz
 # one use site to the semantically identical ranges::mismatch form. Applied
 # unconditionally: the rewritten form is correct on every platform.
 Patch1:         hyprland-el10-ranges-starts-with.patch
+Patch2:         hyprland-lua-mouseresize-uaf.patch
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -290,6 +291,10 @@ install -Dpm644 %{SOURCE1} -t %{buildroot}%{macrosdir}
 %{macrosdir}/macros.hyprland
 
 %changelog
+* Mon Nov 23 2026 Axel Kaliff <axel.kaliff@protonmail.com> - 0.56.2-3
+- Fix a use-after-free crash in the Lua dsp_mouseResize dispatcher.
+- Read the numeric upvalue without an in-place string conversion lacking a GC barrier.
+
 * Wed Nov 18 2026 omedora <noreply@omedora> - 0.56.2-2
 - Rebuild against aquamarine 0.15.1 (libaquamarine.so.14) and hyprutils
   0.14.2, the versions Omarchy stable ships.
