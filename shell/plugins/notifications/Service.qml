@@ -1105,14 +1105,15 @@ Item {
     clipProc.running = true
   }
 
-  // A code is kept out of clipboard history (--sensitive) and cleared after a
-  // while, but only if it is still what is on the clipboard.
+  // A code is cleared after a while, but only if it is still what is on the
+  // clipboard. No --sensitive: EL10's wl-clipboard 2.2.1 rejects it and copies
+  // nothing, so the code does reach clipboard history here.
   property string secretHeld: ""
 
   function copySecret(text) {
     var value = String(text || "")
     if (!value || value.length > 64) return
-    runClip(["wl-copy", "--sensitive", "--", value])
+    runClip(["wl-copy", "--", value])
     secretHeld = value
     secretLife.restart()
   }
