@@ -805,6 +805,10 @@ reason = "1Password's RPM comes from its own repo (a third-party repo needs appr
 source = "skip"
 reason = "NordVPN's RPM comes from its own repo (a third-party repo needs approval). Install > Service > NordVPN is hidden on Fedora."
 
+[notion-desktop]
+source = "skip"
+reason = "4.5.0's Install > Service > Notion. Notion publishes no Linux app; notion-desktop repackages its Electron build for Arch, and it is not in Fedora or RPM Fusion, and Flathub has only third-party wrappers (Cohesion). Install > Service > Notion is hidden on Fedora."
+
 [once-bin]
 source = "skip"
 reason = "37signals ONCE CLI, AUR-only. Install > Service > ONCE is hidden on Fedora."
