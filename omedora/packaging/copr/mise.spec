@@ -15,7 +15,7 @@
 # runtime value.
 
 Name:           mise
-Version:        2026.11.9
+Version:        2026.11.12
 Release:        1%{?dist}
 Summary:        Polyglot dev tool and runtime version manager
 
@@ -64,6 +64,9 @@ install -D -m 0644 share/fish/vendor_conf.d/mise-activate.fish \
 %{_datadir}/fish/vendor_conf.d/mise-activate.fish
 
 %changelog
+* Sun Nov 22 2026 omedora <noreply@omedora> - 2026.11.12-1
+- Bump to upstream 2026.11.12 (matching omarchy-pkgs mise-bin).
+
 * Wed Nov 18 2026 omedora <noreply@omedora> - 2026.11.9-1
 - Bump to upstream 2026.11.9 (matching omarchy-pkgs mise-bin).
 
