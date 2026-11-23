@@ -6,7 +6,7 @@ Omedora 4 has three separate identities. They must not be conflated.
 | --- | --- | --- | --- |
 | Omedora release | `omedora/version` | `0.3.0-beta.1` | Public version and release tag |
 | Reported Omarchy base | `omedora/base-version` | `4.5.0` | User-facing upstream compatibility label |
-| Immutable git base | `omedora-base-20261104-omarchy4-76e11b4f` | `76e11b4f4c031cc9c5291dd5c7115eb2815b765f` | Rebase and byte-identity audit anchor |
+| Immutable git base | `omedora-base-20261122-omarchy4-ac2690cd` | `ac2690cd7be4f47e4a255f5e2e78d904d436b068` | Rebase and byte-identity audit anchor |
 
 The root `version` file belongs to upstream Omarchy. It remains unchanged even
 when its historical prerelease text is less precise than Omedora's immutable

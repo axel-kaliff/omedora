@@ -11,9 +11,9 @@ a git checkout.
 | Ref | Purpose |
 | --- | --- |
 | `omarchy` remote | `omacom/omarchy` upstream |
-| upstream `v4.5.0` | Final release at `76e11b4f4c031cc9c5291dd5c7115eb2815b765f` |
+| upstream `v4.5.0` | Final release at `ac2690cd7be4f47e4a255f5e2e78d904d436b068` |
 | `origin/omedora-4` | Omedora patch stack |
-| `omedora-base-20261104-omarchy4-76e11b4f` | Immutable pin for this rebase |
+| `omedora-base-20261122-omarchy4-ac2690cd` | Immutable pin for this rebase |
 
 The pin label is recorded at the top of [`architecture.md`](architecture.md).
 `test/byte-identity-test.sh` reads it there. During delegated review, before the
@@ -25,7 +25,7 @@ Never rebase a maintainer worktree in place. Fetch the selected upstream object
 without creating a local upstream release tag, then create an isolated branch:
 
 ```bash
-git fetch --no-tags omarchy 76e11b4f4c031cc9c5291dd5c7115eb2815b765f
+git fetch --no-tags omarchy ac2690cd7be4f47e4a255f5e2e78d904d436b068
 git worktree add -b agent/quattro-rebase \
   /home/ajg/code/omedora-quattro-rebase origin/omedora-4
 ```
@@ -34,8 +34,8 @@ Replay only Omedora commits above the previous immutable base:
 
 ```bash
 git rebase --onto \
-  76e11b4f4c031cc9c5291dd5c7115eb2815b765f \
-  8d19ad75ace59af8b6ded52f8b2bec1b15adda7c
+  ac2690cd7be4f47e4a255f5e2e78d904d436b068 \
+  76e11b4f4c031cc9c5291dd5c7115eb2815b765f
 ```
 
 Using explicit `--onto <new-base> <old-base>` is mandatory. Upstream branches
@@ -90,14 +90,14 @@ Fedora migration pipeline, so it is patched in place and tested.
 Prepare the label from the rebase date and upstream SHA:
 
 ```bash
-NEWPIN=omedora-base-20261104-omarchy4-76e11b4f
+NEWPIN=omedora-base-20261122-omarchy4-ac2690cd
 ```
 
 After parent review, create the annotated tag at the upstream commit:
 
 ```bash
-git tag -a "$NEWPIN" 76e11b4f4c031cc9c5291dd5c7115eb2815b765f \
-  -m "Omedora base pin: Omarchy v4.5.0 @ 76e11b4f"
+git tag -a "$NEWPIN" ac2690cd7be4f47e4a255f5e2e78d904d436b068 \
+  -m "Omedora base pin: Omarchy v4.5.0 @ ac2690cd"
 ```
 
 Do not create or push the tag from delegated implementation work. Existing pin
@@ -108,7 +108,7 @@ tags are immutable and are never moved or deleted.
 Run before and after authored fixes:
 
 ```bash
-OMEDORA_BASE_TAG=76e11b4f4c031cc9c5291dd5c7115eb2815b765f \
+OMEDORA_BASE_TAG=ac2690cd7be4f47e4a255f5e2e78d904d436b068 \
   bash test/byte-identity-test.sh
 ```
 
