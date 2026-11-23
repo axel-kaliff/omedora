@@ -166,6 +166,7 @@ ALLOW["default/omarchy/omarchy-menu.jsonc"]='  "install.aur": {"icon":"󰣇","la
   "install.service.dropbox": {"icon":"","label":"Dropbox","when":"[[ $(getconf PAGESIZE) == 4096 ]]","disabled":"omarchy-pkg-present dropbox","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-service-dropbox"},
   "install.service.nordvpn": {"icon":"󱇱","label":"NordVPN","disabled":"omarchy-pkg-present nordvpn-bin","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-service-nordvpn"},
   "install.service.once": {"icon":"󰏖","label":"ONCE","disabled":"omarchy-pkg-present once-bin","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-service-once"},
+  "install.service.notion": {"icon":"","label":"Notion","disabled":"omarchy-pkg-present notion-desktop","action":"omarchy-install-and-launch Notion notion-desktop com.notion.app.desktop.notion"},
   "install.editor.vscode": {"icon":"","label":"VSCode","disabled":"omarchy-pkg-present visual-studio-code-bin","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-editor-vscode"},
   "install.editor.cursor": {"icon":"","iconFont":"omarchy","label":"Cursor","disabled":"omarchy-pkg-present cursor-bin","action":"omarchy-install-and-launch Cursor cursor-bin cursor"},
   "install.editor.zed": {"icon":"","label":"Zed","disabled":"omarchy-pkg-present zed","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-editor-zed"},
