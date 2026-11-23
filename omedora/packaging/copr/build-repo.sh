@@ -112,9 +112,10 @@ SPECS=(
   # libxkbcommon: CS10 has 1.7.0, hyprland 0.56 needs >= 1.11 (Fedora f43 spec;
   # soname-stable additive upgrade). muParser: absent from CS10/EPEL10 entirely
   # (hyprland BuildRequires + runtime lib). keyd: leaf tool for the pneuma
-  # image, unpackaged anywhere for EL10. All are no-ops on Fedora buildroots
-  # (they simply out-version or fill absent packages).
-  libxkbcommon.spec muParser.spec keyd.spec
+  # image, unpackaged anywhere for EL10. wl-clipboard: CS10 has 2.2.1, whose
+  # wl-copy lacks --sensitive (Fedora rawhide spec; additive upgrade). All are
+  # no-ops on Fedora buildroots (they simply out-version or fill absent packages).
+  libxkbcommon.spec muParser.spec keyd.spec wl-clipboard.spec
   # task #66: the vendored Hyprland stack, IN BUILD ORDER (deep intra-stack
   # BuildRequires — each -devel must be in the local repo before the next
   # builds). The whole stack is built from omedora's own COPR.
