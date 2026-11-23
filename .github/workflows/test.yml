@@ -114,6 +114,9 @@ jobs:
       - name: Run lock-pam-migration test
         run: bash test/lock-pam-migration-test.sh
 
+      - name: Run Fedora mise agent-tools test
+        run: bash test/mise-agent-tools-fedora-test.sh
+
       - name: Run auth-removers-fedora test
         run: bash test/auth-removers-fedora-test.sh
 

@@ -300,14 +300,29 @@ for f in 90-omarchy-file-watchers.conf 99-omarchy-sysctl.conf; do
 done
 install -Dpm644 etc/sysctl.d/90-omarchy-arp.conf \
   %{buildroot}%{_datadir}/omarchy/etc-overrides/sysctl.d/90-omarchy-arp.conf
-# mise system config (Omarchy 4.5): the default tools as lazy shims, the
-# agent-account wrappers, and the upgrade.auto_prune setting. Omarchy-named
-# drop-ins in mise's system config directory; our COPR mise reads them.
-# install/user/mise.sh and the lazy-tools migrations require them.
+# mise system config (Omarchy 4.5): the default tools as lazy shims and the
+# upgrade.auto_prune setting, as Omarchy-named drop-ins in mise's system config
+# directory; our COPR mise reads them. install/user/mise.sh and the lazy-tools
+# migrations require them.
+#
+# On Fedora no AI coding agent is declared system-wide: a lazy shim per agent
+# (claude, kimi, codex...) would sit ahead of ~/.local/bin and /usr/bin on
+# every user's PATH. filter-mise-tools.sh drops the agents listed in
+# mise-tools-fedora.list (and fails on an unclassified tool). The dropped
+# declarations and the agent-account wrappers, whose [wrappers.claude/codex/grok]
+# are shims of their own, ship as reference copies a user can opt into.
+# Setup > Defaults > Agent still installs one with `mise use -g`.
 install -d %{buildroot}%{_sysconfdir}/mise/conf.d
-for f in omarchy.toml omarchy-tools.toml omarchy-agent-accounts.toml; do
-  install -pm644 "etc/mise/conf.d/$f" "%{buildroot}%{_sysconfdir}/mise/conf.d/$f"
-done
+install -pm644 etc/mise/conf.d/omarchy.toml %{buildroot}%{_sysconfdir}/mise/conf.d/omarchy.toml
+install -d %{buildroot}%{_datadir}/omarchy/etc-overrides/mise/conf.d
+omedora/packaging/copr/filter-mise-tools.sh etc/mise/conf.d/omarchy-tools.toml \
+  omedora/packaging/copr/mise-tools-fedora.list \
+  %{buildroot}%{_sysconfdir}/mise/conf.d/omarchy-tools.toml \
+  %{buildroot}%{_datadir}/omarchy/etc-overrides/mise/conf.d/omarchy-agent-tools.toml
+chmod 644 %{buildroot}%{_sysconfdir}/mise/conf.d/omarchy-tools.toml \
+  %{buildroot}%{_datadir}/omarchy/etc-overrides/mise/conf.d/omarchy-agent-tools.toml
+install -pm644 etc/mise/conf.d/omarchy-agent-accounts.toml \
+  %{buildroot}%{_datadir}/omarchy/etc-overrides/mise/conf.d/omarchy-agent-accounts.toml
 # Omarchy's XKB option (Shift + Caps Lock = Compose), which default/hypr/input.lua
 # selects. libxkbcommon reads /etc/xkb ahead of the system rules; the rules file
 # only includes the system evdev rules and adds the omarchy option.
@@ -455,7 +470,6 @@ desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/omedora.desktop
 %dir %{_sysconfdir}/mise/conf.d
 %config(noreplace) %{_sysconfdir}/mise/conf.d/omarchy.toml
 %config(noreplace) %{_sysconfdir}/mise/conf.d/omarchy-tools.toml
-%config(noreplace) %{_sysconfdir}/mise/conf.d/omarchy-agent-accounts.toml
 %dir %{_sysconfdir}/xkb
 %dir %{_sysconfdir}/xkb/rules
 %dir %{_sysconfdir}/xkb/symbols

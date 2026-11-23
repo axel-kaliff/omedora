@@ -51,9 +51,14 @@ for source in "$REPO"/etc/mise/conf.d/omarchy*.toml; do
 done
 cleanup() { rm -f "${installed_files[@]}" "$confd/zz-omedora-bogus.toml"; }
 trap cleanup EXIT
+# The agent-account wrappers ship as a reference copy, not in /etc (no agent
+# shims on Fedora by default, see mise-tools-fedora.list). This test still
+# installs the upstream file to prove our mise parses it for a user who opts in.
 for source in "$REPO"/etc/mise/conf.d/omarchy*.toml; do
-  grep -qF "%{_sysconfdir}/mise/conf.d/${source##*/}" "$REPO/omedora/packaging/copr/omedora-settings.spec" \
-    || fail "omedora-settings packages $confd/${source##*/}"
+  name=${source##*/}
+  grep -qF "%{_sysconfdir}/mise/conf.d/$name" "$REPO/omedora/packaging/copr/omedora-settings.spec" \
+    || grep -qF "etc-overrides/mise/conf.d/$name" "$REPO/omedora/packaging/copr/omedora-settings.spec" \
+    || fail "omedora-settings packages $name"
 done
 pass "omedora-settings packages every conf.d file mirrored here"
 

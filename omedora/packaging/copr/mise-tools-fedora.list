@@ -1,0 +1,50 @@
+# Which of Omarchy's default mise tools (etc/mise/conf.d/omarchy-tools.toml)
+# omedora-settings declares system-wide on Fedora.
+#
+#   keep <key>  stays in /etc/mise/conf.d/omarchy-tools.toml (a lazy shim for every user)
+#   drop <key>  is left out of it, so no user gets a shim for it on PATH
+#
+# Every AI coding agent is dropped. Omarchy's lazy shims put a `claude`, `kimi`,
+# `codex`... ahead of ~/.local/bin and /usr/bin on every user's PATH. That
+# shadows an install the user or their employer manages, and some workplaces
+# don't allow these tools on a machine at all. The dropped declarations ship as
+# reference material in
+# /usr/share/omarchy/etc-overrides/mise/conf.d/omarchy-agent-tools.toml. An agent
+# is still one menu action away (Setup > Defaults > Agent runs
+# `mise use -g <tool>` for an undeclared tool).
+#
+# filter-mise-tools.sh fails the build on a key listed in neither column, so a
+# rebase that adds a tool has to classify it here.
+
+keep basecamp
+keep gh
+keep ghui
+keep hey-cli
+keep hunk
+keep node
+keep npm:cf
+keep playwright
+keep uv
+
+drop amp
+drop antigravity-cli
+drop claude
+drop codex
+drop copilot
+drop crush
+drop cursor-agent
+drop grok
+drop http:devin
+drop http:kiro-cli
+drop muse
+drop npm:@deepseek-ai/dsh
+drop npm:@kilocode/cli
+drop npm:@minimax-ai/code
+drop npm:@moonshot-ai/kimi-code
+drop npm:command-code
+drop npm:freebuff
+drop oh-my-pi
+drop opencode
+drop ori
+drop pi
+drop qwen
