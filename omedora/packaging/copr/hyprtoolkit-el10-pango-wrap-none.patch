@@ -1,0 +1,16 @@
+--- a/src/element/text/Text.cpp
++++ b/src/element/text/Text.cpp
+@@ -358,7 +358,13 @@
+         pango_layout_set_wrap(pangoData.layout, PANGO_WRAP_WORD_CHAR);
+         pango_layout_set_ellipsize(pangoData.layout, PANGO_ELLIPSIZE_NONE);
+     } else {
++#if PANGO_VERSION_CHECK(1, 56, 0)
+         pango_layout_set_wrap(pangoData.layout, PANGO_WRAP_NONE);
++#else
++        // Pango < 1.56 (EL10 ships 1.54) has no PANGO_WRAP_NONE; keep
++        // hyprtoolkit 0.5.4's wrap mode for ellipsized text.
++        pango_layout_set_wrap(pangoData.layout, PANGO_WRAP_WORD_CHAR);
++#endif
+         pango_layout_set_ellipsize(pangoData.layout, PANGO_ELLIPSIZE_END);
+     }
+ }

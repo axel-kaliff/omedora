@@ -12,6 +12,9 @@ Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprtoolkit
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+# EL10: pango 1.54 lacks PANGO_WRAP_NONE, introduced in 1.56.
+# Guard with PANGO_VERSION_CHECK so Fedora keeps upstream behaviour.
+Patch0:         hyprtoolkit-el10-pango-wrap-none.patch
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
