@@ -6,7 +6,7 @@
 
 Name:           hyprtoolkit
 Version:        0.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A modern C++ Wayland-native GUI toolkit
 
 License:        BSD-3-Clause
@@ -92,6 +92,16 @@ export PKG_CONFIG_PATH="%{_builddir}/el10-pc-shim${PKG_CONFIG_PATH:+:$PKG_CONFIG
 
 %install
 %cmake_install
+%if 0%{?rhel} >= 10
+# EL10's iniparser-devel has no .pc (see the %%build shim). iniparser is a
+# private dependency, so drop it from Requires.private: otherwise RPM makes
+# -devel require pkgconfig(iniparser), and consumers' pkg-config looks for it.
+sed -i '/^Requires\.private:/ s/ iniparser,//' %{buildroot}%{_libdir}/pkgconfig/%{name}.pc
+if grep -q iniparser %{buildroot}%{_libdir}/pkgconfig/%{name}.pc; then
+    echo "hyprtoolkit.pc still names iniparser; the sed above no longer matches" >&2
+    exit 1
+fi
+%endif
 
 %files
 %license LICENSE
@@ -104,6 +114,10 @@ export PKG_CONFIG_PATH="%{_builddir}/el10-pc-shim${PKG_CONFIG_PATH:+:$PKG_CONFIG
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Tue Nov 24 2026 Axel Kaliff <axel.kaliff@protonmail.com> - 0.6.0-2
+- EL10: drop the private iniparser requirement from hyprtoolkit.pc; EL10's
+  iniparser-devel ships no .pc, so -devel was uninstallable.
+
 * Wed Nov 18 2026 omedora <noreply@omedora> - 0.6.0-1
 - Update to hyprtoolkit 0.6.0, the version Omarchy stable ships (SONAME
   5 -> 6; hyprland-guiutils is rebuilt with it). Built against aquamarine
