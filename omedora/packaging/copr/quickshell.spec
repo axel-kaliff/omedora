@@ -41,7 +41,7 @@
 
 Name:               quickshell
 Version:            0.3.2^%{snapshot}.git%{shortcommit}
-Release:            1%{?dist}
+Release:            2%{?dist}
 Summary:            Flexible QtQuick based desktop shell toolkit
 # Code is LGPL, Hyprland protocols are BSD-3-Clause, wlr protocols are HPND-sell-variant
 License:            LGPL-3.0-only AND BSD-3-Clause AND HPND-sell-variant
@@ -56,6 +56,7 @@ Source0:            https://codeload.github.com/quickshell-mirror/quickshell/tar
 # `//@ pragma OmarchyLoadPatch` (Omarchy's shell.qml does): it pins that
 # config's unversioned `import QtQuick` lines to 6.11. Without it, Qt 6.11
 # merely warns about the unknown pragma, but Qt 6.12 breaks the shell.
+# %%prep applies it only on Qt >= 6.11; see there.
 Patch0:             quickshell-load-qtquick-611.patch
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
@@ -126,7 +127,15 @@ It can be used alongside a Wayland compositor to build a complete desktop
 environment.
 
 %prep
-%autosetup -p1 -n %{name}-%{commit}
+%autosetup -N -n %{name}-%{commit}
+# EL10 ships Qt 6.10, which has no QtQuick 6.11: Patch0's pin to
+# `import QtQuick 6.11` stops Omarchy's shell loading at all ("module
+# "QtQuick" version 6.11 is not installed"). The pin only guards against Qt
+# 6.12's Color singleton, so apply it only when building against Qt >= 6.11.
+qt_version=$(rpm -q --qf '%%{VERSION}' qt6-qtbase-devel)
+if [ "$(printf '%%s\n' 6.11 "$qt_version" | sort -V | head -n1)" = 6.11 ]; then
+%patch -P0 -p1
+fi
 
 %conf
 %cmake  -GNinja \
@@ -161,6 +170,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_qt6_qmldir}/Quickshell/
 
 %changelog
+* Tue Nov 24 2026 Axel Kaliff <axel.kaliff@protonmail.com> - 0.3.2^20261017.git2b4501a28-2
+- Apply the QtQuick 6.11 load patch only on Qt >= 6.11; on EL10's Qt 6.10
+  it stopped Omarchy's shell loading.
+
 * Wed Nov 18 2026 omedora <noreply@omedora> - 0.3.2^20261017.git2b4501a28-1
 - Follow Omarchy to upstream master 2b4501a (seven commits past 0.3.2: the
   session-lock and screencopy crash fixes, Hyprland workspace id changes).
